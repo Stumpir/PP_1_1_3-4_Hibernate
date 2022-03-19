@@ -19,41 +19,26 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        Connection connection = null;
-        try {
-            connection = Util.getConnection();
-            connection.setAutoCommit(false);
-            PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS users (Id INT PRIMARY KEY AUTO_INCREMENT, UserName VARCHAR(20), UserSecondName VARCHAR(20), Age INT)");
-            statement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
+        try (SessionFactory sessionFactory = Util.getHibernateConnection()) {
+            Session session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS users (Id INT PRIMARY KEY AUTO_INCREMENT," +
+                    " UserName VARCHAR(20), UserSecondName VARCHAR(20), Age INT)").addEntity(User.class).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     @Override
     public void dropUsersTable() {
-        Connection connection = null;
-        try {
-            connection = Util.getConnection();
-            connection.setAutoCommit(false);
-            PreparedStatement statement = connection.prepareStatement("DROP TABLE IF EXISTS users");
-            statement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
+        try (SessionFactory sessionFactory = Util.getHibernateConnection()) {
+            Session session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            session.createSQLQuery("DROP TABLE IF EXISTS users").addEntity(User.class).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 

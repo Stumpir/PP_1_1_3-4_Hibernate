@@ -17,8 +17,8 @@ public class Util {
         try {
             return DriverManager.getConnection("jdbc:mysql://localhost/dbtest", "root", "123456");
         } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            e.printStackTrace();                // Оставил просто чтобы старый код ошибкой в проекте не выделялся,
+            return null;                        // Connection в рабочем коде нигде не использовал
         }
     }
 
